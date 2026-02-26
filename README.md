@@ -1,36 +1,13 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Deal Follow-Up Agent
 
-## Getting Started
+Autonomous sales follow-up pipeline that monitors HubSpot deals, detects stale leads, uses AI to score urgency and draft personalized emails, then delivers them to Slack for one-click approval. Approved emails log directly to HubSpot deal activity.
 
-First, run the development server:
+**Core loop:** Detect → Score → Draft → Approve → Execute
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How It Works
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Detect** — Fetches all open deals from HubSpot, checks last email activity against configurable staleness thresholds per deal stage
+2. **Score** — Sends deal context to OpenAI, returns urgency level (critical / high / medium / low) with reasoning
+3. **Draft** — Sends full context (deal info, last 3 emails, urgency) to OpenAI, generates a personalized follow-up email
+4. **Notify** — Posts a rich Slack Block Kit message with urgency tag, deal summary, email preview, and Approve/Dismiss buttons
+5. **Execute** — On approval, logs the email as a note on the HubSpot deal and updates the Slack message
